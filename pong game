@@ -1,0 +1,167 @@
+// lmao.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+#include"raylib.h"
+using namespace std;
+
+
+
+//BALL
+class ball {
+public:
+	float X, Y;
+	double Rad;
+	double xmovement, ymovement;
+
+};
+
+//STICK
+class stick {
+public:
+	float stickx, sticky;
+	float stickwidth, sticklength;
+	double  speed;
+
+	
+
+
+};
+
+
+
+
+
+
+int main(void)
+{
+	const int windowwidth = 1000;
+	const int windowheight = 800;
+
+	SetWindowState(FLAG_VSYNC_HINT);
+
+	InitWindow(windowwidth, windowheight, "bruh");
+	
+	//BALL VALUE
+	ball ball;
+	ball.X = GetScreenWidth() / 2;
+	ball.Y = GetScreenHeight() / 2;
+	ball.Rad = 10;
+	ball.xmovement = 200;
+	ball.ymovement = 400;
+	//WHITE STICK VALUE
+	stick white;
+	white.stickx = 20;
+	white.sticky = GetScreenHeight() / 2 - 125;
+	white.stickwidth = 50;
+	white.sticklength = 250;
+
+
+	//GREEN STICK VALUE
+	stick green;
+	green.stickx = GetScreenWidth() - 20 - 50;
+	green.sticky = GetScreenHeight() / 2 - 125;
+	green.stickwidth = 50;
+	green.sticklength = 250;
+
+	//STICK SPEED
+	white.speed = 400;
+	green.speed = 400;
+	while (!WindowShouldClose()) {
+		
+
+
+
+
+		ball.X += ball.xmovement * GetFrameTime();
+		ball.Y += ball.ymovement * GetFrameTime();
+
+
+		if (ball.Y > GetScreenHeight()) {
+			ball.Y = GetScreenHeight();
+			ball.ymovement *= -1;
+
+		};
+
+		if (ball.Y < 0) {
+			ball.Y = 0;
+			ball.ymovement *= -1;
+		};
+
+		if (IsKeyDown(KEY_W)) {
+			white.sticky -= white.speed * GetFrameTime();
+
+		};
+
+		if (IsKeyDown(KEY_S)) {
+			white.sticky += white.speed * GetFrameTime();
+
+		};
+
+		if (IsKeyDown(KEY_UP)) {
+			green.sticky -= green.speed * GetFrameTime();
+
+		};
+
+		if (IsKeyDown(KEY_DOWN)) {
+			green.sticky += green.speed * GetFrameTime();
+
+		};
+
+		if (white.sticky < 0) {
+			white.sticky = 0;
+
+		};
+
+		if (green.sticky < 0) {
+			green.sticky = 0;
+
+		};
+
+		if (white.sticky >= 550) {
+			white.sticky = 550;
+		};
+
+		if (green.sticky >= 550) {
+			green.sticky = 550;
+		};
+		if (CheckCollisionCircleRec(Vector2{ ball.X,ball.Y }, ball.Rad, Rectangle{ white.stickx , white.sticky,50,250 })) {
+			ball.xmovement *= -1.1;
+			ball.xmovement += 800 * GetFrameTime();
+		}
+		if (CheckCollisionCircleRec(Vector2{ ball.X,ball.Y }, ball.Rad, Rectangle{ green.stickx , green.sticky,50,250 })) {
+			ball.xmovement *= -1.1;
+			ball.xmovement += 800 * GetFrameTime();
+		}
+
+		BeginDrawing();
+		ClearBackground(BLACK);
+		DrawCircle(ball.X, ball.Y, ball.Rad, WHITE);
+		DrawRectangle(white.stickx, white.sticky, white.stickwidth, white.sticklength, WHITE);
+		DrawRectangle(green.stickx, green.sticky, green.stickwidth, green.sticklength, GREEN);
+		DrawFPS(10, 10);
+		EndDrawing();
+
+		CloseWindow();
+
+	};
+
+	
+	return 0;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
